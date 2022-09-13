@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 
 namespace JusoFinder
 {
-    public class ParameterBuilder
+    public class JusoParameterBuilder
     {
         private const string CURRENT_PAGE   = "currentPage";
         private const string COUNT_PER_PAGE = "countPerPage";
