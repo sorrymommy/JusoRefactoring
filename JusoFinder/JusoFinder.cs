@@ -30,6 +30,10 @@ namespace JusoFinder
 
             Result result = jusoParser.Parse(responseString);
 
+            if (!result.common.errorCode.Equals("0"))
+                throw new Exception(result.common.errorMessage);
+                
+
             return result;
         }
 
