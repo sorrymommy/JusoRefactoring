@@ -1,13 +1,7 @@
 ﻿using JusoFinder.Data;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -92,51 +86,6 @@ namespace JusoFinder
             Result result = GetResult(requestParameter);
 
             return result.Juso;
-        }
-    }
-
-    public class ParameterBuilder
-    {
-        public string GetQueryString(RequestParameter requestParameter)
-        {
-            NameValueCollection nvc = new NameValueCollection();
-            nvc.Add("currentPage"  , requestParameter.CurrentPage.ToString() );
-            nvc.Add("countPerPage" , requestParameter.CountPerPage.ToString());
-            nvc.Add("resultType"   , "json"                                  );
-            nvc.Add("confmKey"     , requestParameter.ApiKey                 );
-            nvc.Add("keyword"      , requestParameter.Keyword                );
-
-            return $"{nvc.GetQueryString()}";
-
-        }
-
-    }
-    public class JusoParser
-    {
-        public Result Parse(string content)
-        {
-            JObject o = JObject.Parse(content);
-
-            return JsonConvert.DeserializeObject<Result>(o.SelectToken("results").ToString());
-        }
-    }
-    
-    public class RestRequest
-    {
-        public string GetResponse(string url)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            {
-                request.Method = "GET";
-                request.ContentType = "application/json; charset=utf-8";
-
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                using (Stream stream = response.GetResponseStream())
-                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
         }
     }
 }
