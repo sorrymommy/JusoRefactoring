@@ -55,11 +55,5 @@
       <Name>JusoFinder</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\JusoFinder\JusoFinder.csproj">
-      <Project>{06f53eb8-a5ae-445b-b657-79bd1922146e}</Project>
-      <Name>JusoFinder</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
