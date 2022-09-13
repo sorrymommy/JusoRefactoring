@@ -26,8 +26,12 @@ namespace JusoConsole
             });
 
             foreach (Addr addr in result)
-            {
+
                 Console.WriteLine($"{addr.roadAddrPart1} {addr.roadAddrPart2} {addr.jibunAddr}");
+            }
+            catch (Exception e)
+                //통신 실패시 처리로직
+                Console.WriteLine(e.ToString());
             }
 
             Console.ReadKey();
