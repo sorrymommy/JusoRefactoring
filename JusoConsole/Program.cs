@@ -36,5 +36,29 @@ namespace JusoConsole
 
             Console.ReadKey();
         }
+
+        public List<Addr> FindAll(string apikey, string keyword)
+        {
+            var tempCountPerPage = 100;
+            var totalPages = GetTotalPageCount(apikey, keyword);
+            
+            List<Addr> addrs = new List<Addr>();
+
+            for (int i = 1; i <= totalPages; i++)
+            {
+                var result = Find(i, tempCountPerPage, apikey, keyword);
+                
+                result.ForEach(x => addrs.Add(x));
+            }
+
+            return addrs;
+
+        }
+        public List<Addr> Find(int currentPage, int countPerPage, string apikey, string keyword)
+        {
+            Result result = GetResponse(currentPage, countPerPage, apikey, keyword);
+
+            return result.Juso;
+        }
     }
 }
