@@ -1,4 +1,4 @@
-﻿namespace JusoConsole
+﻿namespace JusoFinder
 {
     public class Addr
     {
