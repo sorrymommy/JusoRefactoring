@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -14,12 +16,19 @@ namespace JusoConsole
     {
         static void Main(string[] args)
         {
-            string result = GetResponse(1, 100, "devU01TX0FVVEgyMDIyMDkxMzE0NTUzMzExMjk2OTI=", "중리");
-            Console.WriteLine(result);
+            Result result = GetResponse(1, 100, "devU01TX0FVVEgyMDIyMDkxMzE0NTUzMzExMjk2OTI=", "중리");
+
+            if (result.common.errorCode.Equals("0"))
+            {
+                foreach (Addr addr in result.Juso)
+                {
+                    Console.WriteLine($"{addr.roadAddrPart1} {addr.roadAddrPart2} {addr.jibunAddr}");
+                }
+            }
             Console.ReadKey();
         }
 
-        public static string GetResponse(int currentPage, int countPerPage, string apikey, string keyword)
+        public static Result GetResponse(int currentPage, int countPerPage, string apikey, string keyword)
         {
             string result = string.Empty;
             
@@ -45,8 +54,10 @@ namespace JusoConsole
                     using (StreamReader reader = new StreamReader(data))
                     {
                         string s = reader.ReadToEnd();
-                        
-                        return s;
+
+                        JObject o = JObject.Parse(s);
+
+                        return JsonConvert.DeserializeObject<Result>(o.SelectToken("results").ToString());
 
                     }
                 }
@@ -56,8 +67,7 @@ namespace JusoConsole
                 Console.WriteLine(e.ToString());
             }
 
-            return string.Empty;
-
+            return null;
         }
     }
 }
