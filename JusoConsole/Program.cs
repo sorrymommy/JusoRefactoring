@@ -22,13 +22,29 @@ namespace JusoConsole
             {
                 Console.WriteLine($"{addr.roadAddrPart1} {addr.roadAddrPart2} {addr.jibunAddr}");
             }
-            
+
             Console.ReadKey();
         }
     }
 
     public class JusoFinder
     {
+        private int GetTotalPageCount(string apikey, string keyword)
+        {
+            Result result = GetResponse(1, 1, apikey, keyword);
+
+            var countPerPage = 100;
+            var totalPages = 1;
+
+            if (result.common.totalCount > 0)
+            {
+                totalPages = result.common.totalCount / countPerPage;
+                totalPages += (result.common.totalCount % countPerPage) > 0 ? 1 : 0;
+            }
+
+            return totalPages;
+        }
+        
         private string GetUrlWithQueryString(int currentPage, int countPerPage, string apikey, string keyword)
         {
             var targetURL = "https://business.juso.go.kr/addrlink/addrLinkApi.do";
@@ -53,13 +69,14 @@ namespace JusoConsole
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 using (Stream stream = response.GetResponseStream())
-                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8)){
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8)) {
                     return reader.ReadToEnd();
 
                 }
             }
         }
-        public List<Addr> Find(int currentPage, int countPerPage, string apikey, string keyword)
+
+        private Result GetResponse(int currentPage, int countPerPage, string apikey, string keyword)
         {
             try
             {
@@ -69,7 +86,7 @@ namespace JusoConsole
 
                 JObject o = JObject.Parse(result);
 
-                return JsonConvert.DeserializeObject<Result>(o.SelectToken("results").ToString()).Juso;
+                return JsonConvert.DeserializeObject<Result>(o.SelectToken("results").ToString());
             }
             catch (Exception e)
             {
@@ -77,6 +94,30 @@ namespace JusoConsole
             }
 
             return null;
+        }
+
+        public List<Addr> FindAll(string apikey, string keyword)
+        {
+            var tempCountPerPage = 100;
+            var totalPages = GetTotalPageCount(apikey, keyword);
+            
+            List<Addr> addrs = new List<Addr>();
+
+            for (int i = 1; i <= totalPages; i++)
+            {
+                var result = Find(i, tempCountPerPage, apikey, keyword);
+                
+                result.ForEach(x => addrs.Add(x));
+            }
+
+            return addrs;
+
+        }
+        public List<Addr> Find(int currentPage, int countPerPage, string apikey, string keyword)
+        {
+            Result result = GetResponse(currentPage, countPerPage, apikey, keyword);
+
+            return result.Juso;
         }
     }
 }
