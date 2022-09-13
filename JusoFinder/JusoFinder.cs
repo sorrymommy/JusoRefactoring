@@ -61,9 +61,9 @@ namespace JusoFinder
             RequestParameter tempRequestParameter = new RequestParameter()
             {
                 CountPerPage = 100,
-                CurrentPage = 1,
-                ApiKey = requestParameter.ApiKey,
-                Keyword = requestParameter.Keyword
+                CurrentPage  = 1,
+                ApiKey       = requestParameter.ApiKey,
+                Keyword      = requestParameter.Keyword
             };
             
             var totalPages = GetTotalPageCount(requestParameter);
@@ -73,9 +73,9 @@ namespace JusoFinder
             for (int i = 1; i <= totalPages; i++)
             {
                 tempRequestParameter.CurrentPage = i;
-                var result = Find(tempRequestParameter);
+                var result = GetResult(tempRequestParameter);
 
-                result.ForEach(x => addrs.Add(x));
+                result.Juso.ForEach(x => addrs.Add(x));
             }
 
             return addrs;
