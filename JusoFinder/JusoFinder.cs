@@ -2,7 +2,11 @@
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -17,7 +21,7 @@ namespace JusoFinder
         private const string KEYWORD = "keyword";
         private const string JSON = "json";
         private const string TARGET_URL = "https://business.juso.go.kr/addrlink/addrLinkApi.do";
-
+        
         private JusoJsonParser jusoParser = new JusoJsonParser();
 
         private Result GetResult(RequestParameter requestParameter)
@@ -46,14 +50,14 @@ namespace JusoFinder
 
         private int GetTotalPageCount(RequestParameter requestParameter)
         {
-            Result result = GetResult(new RequestParameter()
-            {
-                CountPerPage = 1,
+            Result result = GetResult(new RequestParameter() 
+            { 
+                CountPerPage = 1, 
                 CurrentPage = 1,
                 ApiKey = requestParameter.ApiKey,
                 Keyword = requestParameter.Keyword
             });
-
+            
             var countPerPage = 100;
             var totalPages = 1;
 
@@ -75,7 +79,7 @@ namespace JusoFinder
                 ApiKey = requestParameter.ApiKey,
                 Keyword = requestParameter.Keyword
             };
-
+            
             var totalPages = GetTotalPageCount(requestParameter);
 
             List<Addr> addrs = new List<Addr>();
@@ -97,6 +101,50 @@ namespace JusoFinder
 
             return result.Juso;
         }
+    }
 
+    public class ParameterBuilder
+    {
+        public string GetQueryString(RequestParameter requestParameter)
+        {
+            NameValueCollection nvc = new NameValueCollection();
+            nvc.Add("currentPage"  , requestParameter.CurrentPage.ToString() );
+            nvc.Add("countPerPage" , requestParameter.CountPerPage.ToString());
+            nvc.Add("resultType"   , "json"                                  );
+            nvc.Add("confmKey"     , requestParameter.ApiKey                 );
+            nvc.Add("keyword"      , requestParameter.Keyword                );
+
+            return $"{nvc.GetQueryString()}";
+
+        }
+
+    }
+    public class JusoParser
+    {
+        public Result Parse(string content)
+        {
+            JObject o = JObject.Parse(content);
+
+            return JsonConvert.DeserializeObject<Result>(o.SelectToken("results").ToString());
+        }
+    }
+    
+    public class RestRequest
+    {
+        public string GetResponse(string url)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            {
+                request.Method = "GET";
+                request.ContentType = "application/json; charset=utf-8";
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
     }
 }
