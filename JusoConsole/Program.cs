@@ -16,51 +16,60 @@ namespace JusoConsole
     {
         static void Main(string[] args)
         {
-            Result result = GetResponse(1, 100, "devU01TX0FVVEgyMDIyMDkxMzE0NTUzMzExMjk2OTI=", "중리");
+            IEnumerable<Addr> addrs = (new JusoFinder()).Find(1, 100, "devU01TX0FVVEgyMDIyMDkxMzE0NTUzMzExMjk2OTI=", "중리");
 
-            if (result.common.errorCode.Equals("0"))
+            foreach (Addr addr in addrs)
             {
-                foreach (Addr addr in result.Juso)
-                {
-                    Console.WriteLine($"{addr.roadAddrPart1} {addr.roadAddrPart2} {addr.jibunAddr}");
-                }
+                Console.WriteLine($"{addr.roadAddrPart1} {addr.roadAddrPart2} {addr.jibunAddr}");
             }
+            
             Console.ReadKey();
         }
+    }
 
-        public static Result GetResponse(int currentPage, int countPerPage, string apikey, string keyword)
+    public class JusoFinder
+    {
+        private string GetUrlWithQueryString(int currentPage, int countPerPage, string apikey, string keyword)
         {
-            string result = string.Empty;
-            
+            var targetURL = "https://business.juso.go.kr/addrlink/addrLinkApi.do";
+
+            NameValueCollection nvc = new NameValueCollection();
+            nvc.Add("currentPage", currentPage.ToString());
+            nvc.Add("countPerPage", countPerPage.ToString());
+            nvc.Add("resultType", "json");
+            nvc.Add("confmKey", apikey);
+            nvc.Add("keyword", keyword);
+
+            return $"{targetURL}?{string.Join("&", nvc.AllKeys.Select(a => a + "=" + HttpUtility.UrlEncode(nvc[a])))}";
+
+        }
+
+        private string GetWebResponse(string url)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            {
+                request.Method = "GET";
+                request.ContentType = "application/json; charset=utf-8";
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8)){
+                    return reader.ReadToEnd();
+
+                }
+            }
+        }
+        public List<Addr> Find(int currentPage, int countPerPage, string apikey, string keyword)
+        {
             try
             {
-                var targetURL = "https://business.juso.go.kr/addrlink/addrLinkApi.do";
+                var targetURL = GetUrlWithQueryString(currentPage, countPerPage, apikey, keyword);
 
-                NameValueCollection nvc = new NameValueCollection();
-                nvc.Add("currentPage"  , currentPage.ToString()  );
-                nvc.Add("countPerPage" , countPerPage.ToString() );
-                nvc.Add("resultType"   , "json"                  );
-                nvc.Add("confmKey"     , apikey                  );
-                nvc.Add("keyword"      , keyword                 );
+                var result = GetWebResponse(targetURL);
 
-                targetURL = $"{targetURL}?{string.Join("&", nvc.AllKeys.Select(a => a + "=" + HttpUtility.UrlEncode(nvc[a])))}";
+                JObject o = JObject.Parse(result);
 
-                using (WebClient client = new WebClient())
-                {
-                    //특정 요청 헤더값을 추가해준다. 
-                    client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
-
-                    using (Stream data = client.OpenRead(targetURL))
-                    using (StreamReader reader = new StreamReader(data))
-                    {
-                        string s = reader.ReadToEnd();
-
-                        JObject o = JObject.Parse(s);
-
-                        return JsonConvert.DeserializeObject<Result>(o.SelectToken("results").ToString());
-
-                    }
-                }
+                return JsonConvert.DeserializeObject<Result>(o.SelectToken("results").ToString()).Juso;
             }
             catch (Exception e)
             {
