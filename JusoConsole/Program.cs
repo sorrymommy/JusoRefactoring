@@ -14,20 +14,28 @@ namespace JusoConsole
     {
         static void Main(string[] args)
         {
+            string result = GetResponse(1, 100, "devU01TX0FVVEgyMDIyMDkxMzE0NTUzMzExMjk2OTI=", "중리");
+            Console.WriteLine(result);
+            Console.ReadKey();
+        }
+
+        public static string GetResponse(int currentPage, int countPerPage, string apikey, string keyword)
+        {
             string result = string.Empty;
+            
             try
             {
                 var targetURL = "https://business.juso.go.kr/addrlink/addrLinkApi.do";
 
                 NameValueCollection nvc = new NameValueCollection();
-                nvc.Add("currentPage", "1");
-                nvc.Add("countPerPage", "100");
-                nvc.Add("resultType", "json");
-                nvc.Add("confmKey", "devU01TX0FVVEgyMDIyMDkxMzE0NTUzMzExMjk2OTI=");
-                nvc.Add("keyword", "중리");
+                nvc.Add("currentPage"  , currentPage.ToString()  );
+                nvc.Add("countPerPage" , countPerPage.ToString() );
+                nvc.Add("resultType"   , "json"                  );
+                nvc.Add("confmKey"     , apikey                  );
+                nvc.Add("keyword"      , keyword                 );
 
                 targetURL = $"{targetURL}?{string.Join("&", nvc.AllKeys.Select(a => a + "=" + HttpUtility.UrlEncode(nvc[a])))}";
-                
+
                 using (WebClient client = new WebClient())
                 {
                     //특정 요청 헤더값을 추가해준다. 
@@ -37,19 +45,18 @@ namespace JusoConsole
                     using (StreamReader reader = new StreamReader(data))
                     {
                         string s = reader.ReadToEnd();
-                        result = s;
+                        
+                        return s;
 
-                        reader.Close();
-                        data.Close();
                     }
-                    Console.WriteLine(result);
                 }
-                Console.ReadKey();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
+
+            return string.Empty;
 
         }
     }
