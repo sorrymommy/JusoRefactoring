@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JusoConsole", "JusoConsole\JusoConsole.csproj", "{FFCD3916-EBBB-4449-B4A7-0517E4424CF2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JusoFinder", "JusoFinder\JusoFinder.csproj", "{06F53EB8-A5AE-445B-B657-79BD1922146E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{FFCD3916-EBBB-4449-B4A7-0517E4424CF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFCD3916-EBBB-4449-B4A7-0517E4424CF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFCD3916-EBBB-4449-B4A7-0517E4424CF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06F53EB8-A5AE-445B-B657-79BD1922146E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06F53EB8-A5AE-445B-B657-79BD1922146E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06F53EB8-A5AE-445B-B657-79BD1922146E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06F53EB8-A5AE-445B-B657-79BD1922146E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
