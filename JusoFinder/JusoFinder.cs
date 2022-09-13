@@ -13,7 +13,7 @@ namespace JusoFinder
         
         private RestRequest restRequest = new RestRequest();
         private JusoParser jusoParser = new JusoParser();
-        private ParameterBuilder parameterBuilder = new ParameterBuilder();
+        private JusoParameterBuilder parameterBuilder = new JusoParameterBuilder();
 
         private string GetTargetUrlWithQueryString(RequestParameter requestParameter)
         {
