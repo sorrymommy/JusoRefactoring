@@ -18,7 +18,7 @@ namespace JusoFinder
         private const string JSON = "json";
         private const string TARGET_URL = "https://business.juso.go.kr/addrlink/addrLinkApi.do";
 
-        private JusoParser jusoParser = new JusoParser();
+        private JusoJsonParser jusoParser = new JusoJsonParser();
 
         private Result GetResult(RequestParameter requestParameter)
         {
