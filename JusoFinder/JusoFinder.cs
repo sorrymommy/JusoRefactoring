@@ -8,11 +8,6 @@ using System.Web;
 
 namespace JusoFinder
 {
-    public interface IJusoFinder
-    {
-        List<Addr> FindAll(RequestParameter requestParameter);
-        List<Addr> Find(RequestParameter requestParameter);
-    }
     public class JusoFinder : IJusoFinder
     {
         private const string CURRENT_PAGE = "currentPage";
