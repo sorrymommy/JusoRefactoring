@@ -3,7 +3,8 @@ using Newtonsoft.Json.Linq;
 
 namespace JusoFinder
 {
-    public class JusoParser
+
+    public class JusoJsonParser: IJusoParser
     {
         public Result Parse(string content)
         {
