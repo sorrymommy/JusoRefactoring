@@ -42,7 +42,7 @@ namespace JusoFinder
 
             if (!result.common.errorCode.Equals("0"))
                 throw new Exception(result.common.errorMessage);
-                
+
 
             return result;
         }
@@ -57,7 +57,7 @@ namespace JusoFinder
                 ApiKey = requestParameter.ApiKey,
                 Keyword = requestParameter.Keyword
             });
-            
+
             var countPerPage = 100;
             var totalPages = 1;
 
@@ -79,7 +79,7 @@ namespace JusoFinder
                 ApiKey = requestParameter.ApiKey,
                 Keyword = requestParameter.Keyword
             };
-            
+
             var totalPages = GetTotalPageCount(requestParameter);
 
             List<Addr> addrs = new List<Addr>();
@@ -101,5 +101,6 @@ namespace JusoFinder
 
             return result.Juso;
         }
+
     }
 }
