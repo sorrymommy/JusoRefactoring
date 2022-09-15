@@ -53,6 +53,7 @@
     <Compile Include="Data\RequestParameter.cs" />
     <Compile Include="Data\Result.cs" />
     <Compile Include="IJusoFinder.cs" />
+    <Compile Include="IJusoParser.cs" />
     <Compile Include="JusoFinder.cs" />
     <Compile Include="JusoParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
