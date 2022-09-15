@@ -1,4 +1,5 @@
 ﻿using JusoFinder.Data;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,32 +8,43 @@ using System.Web;
 
 namespace JusoFinder
 {
-    public class JusoFinder
+    public interface IJusoFinder
     {
-        private static readonly string TargetUrl = "https://business.juso.go.kr/addrlink/addrLinkApi.do";
-        
-        private RestRequest restRequest = new RestRequest();
+        List<Addr> FindAll(RequestParameter requestParameter);
+        List<Addr> Find(RequestParameter requestParameter);
+    }
+    public class JusoFinder : IJusoFinder
+    {
+        private const string CURRENT_PAGE = "currentPage";
+        private const string COUNT_PER_PAGE = "countPerPage";
+        private const string RESULT_TYPE = "resultType";
+        private const string CONFIRM_KEY = "confmKey";
+        private const string KEYWORD = "keyword";
+        private const string JSON = "json";
+        private const string TARGET_URL = "https://business.juso.go.kr/addrlink/addrLinkApi.do";
+
         private JusoParser jusoParser = new JusoParser();
-        private JusoParameterBuilder parameterBuilder = new JusoParameterBuilder();
-
-        private string GetTargetUrlWithQueryString(RequestParameter requestParameter)
-        {
-            var queryString = parameterBuilder.GetQueryString(requestParameter);
-            var url = $"{TargetUrl}?{queryString}";
-
-            return url;
-        }
 
         private Result GetResult(RequestParameter requestParameter)
         {
-            var targetUrlWithQueryString = GetTargetUrlWithQueryString(requestParameter);
-            var responseString = restRequest.GetResponse(targetUrlWithQueryString);
+            var client = new RestClient(TARGET_URL);
+            var request = new RestRequest()
+                    .AddParameter(CURRENT_PAGE, requestParameter.CurrentPage)
+                    .AddParameter(COUNT_PER_PAGE, requestParameter.CountPerPage)
+                    .AddParameter(RESULT_TYPE, JSON)
+                    .AddParameter(CONFIRM_KEY, requestParameter.ApiKey)
+                    .AddParameter(KEYWORD, requestParameter.Keyword);
 
-            Result result = jusoParser.Parse(responseString);
+            var response = client.Execute(request);
+
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                throw new Exception($"{response.StatusCode}{response.StatusDescription}");
+
+            Result result = jusoParser.Parse(response.Content);
 
             if (!result.common.errorCode.Equals("0"))
                 throw new Exception(result.common.errorMessage);
-                
+
 
             return result;
         }
@@ -40,14 +52,14 @@ namespace JusoFinder
 
         private int GetTotalPageCount(RequestParameter requestParameter)
         {
-            Result result = GetResult(new RequestParameter() 
-            { 
-                CountPerPage = 1, 
-                CurrentPage  = 1,
-                ApiKey       = requestParameter.ApiKey, 
-                Keyword      = requestParameter.Keyword
+            Result result = GetResult(new RequestParameter()
+            {
+                CountPerPage = 1,
+                CurrentPage = 1,
+                ApiKey = requestParameter.ApiKey,
+                Keyword = requestParameter.Keyword
             });
-            
+
             var countPerPage = 100;
             var totalPages = 1;
 
@@ -65,11 +77,11 @@ namespace JusoFinder
             RequestParameter tempRequestParameter = new RequestParameter()
             {
                 CountPerPage = 100,
-                CurrentPage  = 1,
-                ApiKey       = requestParameter.ApiKey,
-                Keyword      = requestParameter.Keyword
+                CurrentPage = 1,
+                ApiKey = requestParameter.ApiKey,
+                Keyword = requestParameter.Keyword
             };
-            
+
             var totalPages = GetTotalPageCount(requestParameter);
 
             List<Addr> addrs = new List<Addr>();
@@ -91,5 +103,6 @@ namespace JusoFinder
 
             return result.Juso;
         }
+
     }
 }
