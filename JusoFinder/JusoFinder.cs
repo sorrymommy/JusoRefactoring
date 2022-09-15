@@ -70,7 +70,7 @@ namespace JusoFinder
         {
             RequestParameter tempRequestParameter = new RequestParameter()
             {
-                CountPerPage = 100,
+                CountPerPage = 1,
                 CurrentPage = 1,
                 ApiKey = requestParameter.ApiKey,
                 Keyword = requestParameter.Keyword
