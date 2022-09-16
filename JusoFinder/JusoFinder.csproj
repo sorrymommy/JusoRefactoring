@@ -52,10 +52,12 @@
     <Compile Include="Data\Common.cs" />
     <Compile Include="Data\RequestParameter.cs" />
     <Compile Include="Data\Result.cs" />
+    <Compile Include="Factory\JusoParserType.cs" />
     <Compile Include="IJusoFinder.cs" />
     <Compile Include="IJusoParser.cs" />
     <Compile Include="JusoFinder.cs" />
     <Compile Include="JusoParser.cs" />
+    <Compile Include="Factory\JusoParserFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
