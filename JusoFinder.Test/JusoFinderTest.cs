@@ -1,3 +1,4 @@
+using JusoFinder.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
 
