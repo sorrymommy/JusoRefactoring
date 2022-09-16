@@ -1,8 +1,5 @@
 # JusoRefactoring
 
-1. Rest API 호출을 RestSharp이용으로 변경
+Step01 ~ Step04 까지 
 
-2. 불필요한 웹 호출관련 클래스 제거
-
-3. 테스트 추가
-
+juso.go.kr 의 API를 단순하게 이용하는 상황에서 부터 클래스로 분리하고 TDD로 적용하는 과정을 팀원들과 학습하기 위해서 만듬.
