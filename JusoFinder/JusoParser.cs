@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using JusoFinder.Data;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace JusoFinder

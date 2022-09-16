@@ -1,4 +1,4 @@
-﻿namespace JusoFinder
+﻿namespace JusoFinder.Data
 {
     public class Addr
     {

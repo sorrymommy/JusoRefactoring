@@ -1,4 +1,6 @@
-﻿namespace JusoFinder
+﻿using JusoFinder.Data;
+
+namespace JusoFinder
 {
     public interface IJusoParser
     {
